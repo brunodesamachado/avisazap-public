@@ -121,4 +121,23 @@ Os workflows estão em `n8n/workflows/`. Veja `docs/n8n-setup.md` para o guia co
 
 ## Status
 
-Em produção — monitorando Mercado Livre, Amazon e Shopee.
+### Fase 1 — Concluída
+
+Mineração de ofertas em Mercado Livre, Amazon e Shopee funcionando em produção. Extração de atributos via LLM, match com alertas dos usuários, deduplicação Redis e envio via WhatsApp operacionais.
+
+### Fase 2 — Em desenvolvimento
+
+- Busca direcionada por produto: consultar os marketplaces com os termos dos alertas cadastrados, em vez de varrer páginas genéricas de ofertas
+- Integração com a Amazon Creators API em substituição ao scraping atual
+
+## Melhorias futuras
+
+| # | Melhoria | Impacto |
+|---|---|---|
+| 1 | **Busca direcionada por produto** — consultar marketplaces com os termos dos alertas ativos em vez de páginas genéricas de ofertas. Reduz custo de LLM e aumenta relevância dos resultados. | Alto |
+| 2 | **Amazon Creators API** — substituir o scraping via `curl_cffi` pela API oficial. Elimina fragilidade de TLS fingerprint e fornece dados estruturados com links de afiliado já embutidos. | Alto |
+| 3 | **Histórico de preços nas notificações** — a tabela `avisa_price_history` já é populada mas não utilizada. Enriquecer as mensagens com contexto como "menor preço registrado nos últimos 30 dias". | Médio |
+| 4 | **TTL dinâmico de deduplicação Redis** — usar TTL variável por categoria de produto em vez do fixo de 12h. Flash deals da Shopee mudam em horas; eletrônicos levam dias. Aumenta cobertura sem spam. | Médio |
+| 5 | **Paginação no Mercado Livre** — o poller atual coleta apenas 1 página (~30 produtos). Adicionar 2–3 páginas de `/ofertas` triplicaria o volume sem mudar a estratégia de scraping. | Médio |
+| 6 | **Expiração de alertas** — alertas nunca expiram, gerando processamento para usuários inativos. Adicionar `max_notifications` ou `expires_at` por alerta limparia a base e reduziria carga. | Baixo |
+| 7 | **Retry no envio WhatsApp** — falhas na Evolution API descartam alertas silenciosamente. Um nó de retry com backoff no workflow n8n garantiria a entrega. | Baixo |
