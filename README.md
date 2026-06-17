@@ -1,3 +1,5 @@
+![Banner](assets/banner.png)
+
 # AvisaZap
 
 ![Em produção](https://img.shields.io/badge/status-em%20produção-brightgreen) ![Python 3.12](https://img.shields.io/badge/python-3.12-blue) ![Docker](https://img.shields.io/badge/docker-ready-blue) ![n8n](https://img.shields.io/badge/n8n-workflows-orange) ![PostgreSQL](https://img.shields.io/badge/postgresql-database-336791) ![Redis](https://img.shields.io/badge/redis-cache-red)
@@ -56,6 +58,21 @@ Usuário (WhatsApp)
   Usuário (WhatsApp)
 ```
 
+## Demo
+
+<table>
+  <tr>
+    <td align="center"><b>Cadastrando um alerta</b></td>
+    <td align="center"><b>Recebendo uma oferta</b></td>
+    <td align="center"><b>Listando alertas ativos</b></td>
+  </tr>
+  <tr>
+    <td><img src="assets/screenshots/whatsapp-cadastro.png" alt="Cadastrando um alerta" width="220"/></td>
+    <td><img src="assets/screenshots/whatsapp-notificacao.png" alt="Recebendo uma notificação de oferta" width="220"/></td>
+    <td><img src="assets/screenshots/whatsapp-listagem.png" alt="Listando alertas ativos" width="220"/></td>
+  </tr>
+</table>
+
 ## Arquitetura
 
 ### Parte 1 — Python Worker (Docker / Railway)
@@ -69,6 +86,18 @@ Servidor HTTP assíncrono (`aiohttp`) com endpoint `POST /trigger`. Executa o ci
 Dois workflows independentes: **AgenteAvisaZap** (recebe mensagem do usuário via webhook, usa AI Agent para extrair entidades e cadastra no PostgreSQL) e **Workflow_Marketplace** (Schedule Trigger → HTTP POST ao Python Worker → loop sobre alerts[] → envio WhatsApp com delay configurável).
 
 **Tecnologias-chave:** `n8n`, `Evolution API`, `OpenRouter (gpt-4o-mini)`, `PostgreSQL`, `LangChain AI Agent`
+
+#### Agente IA — Cadastro de alertas
+
+![Workflow do AgenteAvisaZap no n8n](assets/screenshots/n8n-agente-workflow.png)
+
+#### Workflow de monitoramento por marketplace
+
+![Workflow de marketplace no n8n](assets/screenshots/n8n-marketplace-workflow.png)
+
+#### Infraestrutura Railway
+
+![Dashboard Railway com os 4 serviços](assets/screenshots/railway-dashboard.png)
 
 ## Stack
 
