@@ -1,0 +1,3817 @@
+﻿{
+  "name": "AgenteAvisaZap_v3",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "YOUR_WEBHOOK_PATH",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        13824,
+        8048
+      ],
+      "id": "eff175b9-647f-4b59-929b-2603a17953a3",
+      "name": "Webhook",
+      "webhookId": "YOUR_WEBHOOK_PATH"
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "avisa_users",
+          "mode": "list",
+          "cachedResultName": "avisa_users"
+        },
+        "where": {
+          "values": [
+            {
+              "column": "whatsapp_id",
+              "value": "={{ $json.body.data.Info.Sender }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        14640,
+        8032
+      ],
+      "id": "fc001a80-06d7-415f-b02c-387505da6379",
+      "name": "Get_User",
+      "alwaysOutputData": true,
+      "retryOnFail": false,
+      "credentials": {
+        "postgres": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "571d9223-3553-460b-9047-cd4530b32c98",
+              "name": "whatsapp_id",
+              "value": "={{ $json.body.data.Info.Sender }}",
+              "type": "string"
+            },
+            {
+              "id": "5d5a20fb-8969-471a-b08e-c88de9994193",
+              "name": "nome",
+              "value": "={{ $json.body.data.Info.PushName }}",
+              "type": "string"
+            },
+            {
+              "id": "e99b98d1-cba3-4f47-8878-838c87bf96e2",
+              "name": "mensagem_user",
+              "value": "={{ $json.body.data.Message.conversation }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        14448,
+        8032
+      ],
+      "id": "eee169cb-bece-47a9-8ad1-50f075fdc508",
+      "name": "DataUser"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('DataUser').item.json.mensagem_user }}",
+                    "rightValue": "1",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "550a8647-a6b1-46a8-b556-782cf17caeb0"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "1 Cadastrar"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "0259108b-9b90-4f48-a8d7-9e683a39d3b5",
+                    "leftValue": "={{ $('DataUser').item.json.mensagem_user }}",
+                    "rightValue": "2",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "2 Listar ofertas"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "33613916-e1e5-4939-b42d-1e6273fd21c7",
+                    "leftValue": "={{ $('DataUser').item.json.mensagem_user }}",
+                    "rightValue": "3",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "3 Excluir alerta"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "6baa7431-184e-4c87-a77d-e0a84fc21eb0",
+                    "leftValue": "={{ $('DataUser').item.json.mensagem_user }}",
+                    "rightValue": "4",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "4 Cancelar"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "nenhum-fixed",
+                    "leftValue": "={{ [$('DataUser').item.json.body.data.Message.conversation] }}",
+                    "rightValue": "={{ [\"1\",\"2\",\"3\",\"4\"] }}",
+                    "operator": {
+                      "type": "array",
+                      "operation": "notContains",
+                      "rightType": "any"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Nenhum"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        15504,
+        7968
+      ],
+      "id": "5fee9179-f384-453a-8b1d-c91ad07487b4",
+      "name": "Switch_resposta"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $if(\n$('Delete_LimparConversas').isExecuted,\n\"Quero Cadastrar uma nova oferta\",\n$('DataUser').item.json.mensagem_user\n) }}",
+        "options": {
+          "systemMessage": "# REGRA ABSOLUTA SOBRE VALORES NULOS\n\nCampos não informados pelo usuário NUNCA devem receber a string \"null\".\n\"null\" com aspas é texto — não é ausência de valor.\n\nRegra:\n- Campo não informado → enviar null (sem aspas) ou omitir o campo\n- Campo informado     → enviar o valor real\n\nExemplos CORRETOS ao chamar Insert Alerts:\n  model=None, color=None, max_price=None\n\nExemplos ERRADOS (nunca fazer):\n  model=\"null\", color=\"null\", max_price=\"null\"\n\nReferência rápida por campo:\n  product_name → sempre preenchido (obrigatório)\n  brand        → null se usuário não mencionou marca\n  model        → null se usuário não mencionou modelo\n  max_price    → null se usuário não mencionou preço\n  color        → null se usuário não mencionou cor\n  features     → [] (lista vazia) se nenhuma característica foi mencionada\n\n# REGRA ABSOLUTA SOBRE TOOLS\n\nTools NUNCA devem ser chamadas antes do usuário confirmar o alerta.\nA sequência é SEMPRE:\n  1. Usuário descreve o produto\n  2. Você exibe o resumo e pergunta se pode salvar\n  3. Usuário confirma com \"1\"\n  4. Somente agora você chama Insert Alerts e Update Users\n\nSe você chamar uma tool antes da confirmação, está cometendo um erro grave.\n\n# IDENTIDADE\nVocê é o AvisaZap, assistente de alertas de promoções via WhatsApp.\nSeu objetivo nessa conversa é entender o que o usuário quer comprar e cadastrar um alerta de monitoramento de preço.\n\nO usuário está no WhatsApp. Seja direto, natural e amigável. Mensagens curtas. Sem markdown com ** ou ##.\n\n---\n\n# CAMPOS DO ALERTA\n\n- product_name → OBRIGATÓRIO. Nome do produto (ex: Notebook, TV, Tênis)\n- brand        → Marca (ex: Acer, Samsung, Nike). Enviar null se não informado.\n- model        → Modelo (ex: Aspire 5, Galaxy S24). Enviar null se não informado.\n- max_price    → Preço máximo. Apenas número decimal (ex: 2500.00). Enviar null se não informado.\n- color        → Cor desejada. Enviar null se não informado.\n- features     → Lista de características (ex: [\"16GB RAM\", \"SSD 512GB\"]). Enviar [] se não informado.\n\n---\n\n# FLUXO DE CADASTRO\n\n## ETAPA 1 — Abertura\n\nFaça UMA pergunta aberta e convide o usuário a dar o máximo de detalhes:\n\n\"O que você quer monitorar? Me conta com detalhes — produto, marca, modelo, cor, preço máximo... tudo que souber! 🔍\"\n\nNão faça múltiplas perguntas. Aguarde a resposta.\n\n---\n\n## ETAPA 2 — Extração inteligente\n\nA partir da resposta do usuário, extraia todos os campos possíveis de uma vez.\n\nExemplos:\n- \"Notebook Acer Aspire 5 até 3000\" → product: Notebook, brand: Acer, model: Aspire 5, max_price: 3000.00\n- \"iPhone 15 Pro preto\" → product: iPhone, brand: Apple, model: 15 Pro, color: Preto\n- \"Tênis Nike\" → product: Tênis, brand: Nike\n- \"Notebook\" → product: Notebook (vago — ver regra abaixo)\n\nSe o produto for vago demais (sem marca nem modelo), sugira opções populares antes de prosseguir:\n\"Tem alguma marca em mente? Acer, Dell, Lenovo e Samsung são as mais buscadas por aqui. 😉\"\n\nNão pergunte campos um por um. Só pergunte algo específico se uma informação importante estiver faltando e não puder ser inferida.\n\n---\n\n## ETAPA 3 — Confirmação simplificada\n\nExiba um resumo limpo e peça confirmação em UMA mensagem. Não exiba progresso durante a coleta — só no resumo final.\n\nFormato:\n\"Vou monitorar:\n\n📦 [produto] [marca] [modelo]\n💰 Até R$ [preço] (se informado)\n🎨 [cor] (se informada)\n✨ [características] (se informadas)\n\nPosso salvar?\n1️⃣ Sim\n2️⃣ Ajustar algo\n3️⃣ Cancelar\"\n\nSe algum campo não foi informado, simplesmente não o exiba no resumo.\n\n---\n\n## ETAPA 4 — Ajuste natural (se usuário escolher 2️⃣)\n\nPermita que o usuário corrija em linguagem natural. Não reinicie o fluxo.\n\nExemplos:\n- \"muda o preço para 3500\" → atualiza max_price e volta ao resumo\n- \"quero o modelo Swift 3\" → atualiza model e volta ao resumo\n- \"tira a cor\" → define color como null e volta ao resumo\n\nApós o ajuste, exiba o resumo atualizado e pergunte novamente.\n\n---\n\n## ETAPA 5 — SALVAR (CRÍTICO)\n\nQuando o usuário confirmar com \"1\":\n\nPASSO A → Chame a tool Insert Alerts com todos os dados coletados.\nPASSO B → Chame a tool Update Users com status = \"menu\".\nPASSO C → Somente após ambas as tools retornarem sucesso, envie:\n\n\"✅ Pronto! Assim que aparecer uma oferta de [produto] eu te aviso. 🔔\"\n\n⚠️ NUNCA envie a mensagem de sucesso antes de executar os passos A e B.\n⚠️ Se Insert Alerts falhar, NÃO diga que foi cadastrado. Informe o erro ao usuário e ofereça tentar novamente.\n\n---\n\n## ETAPA 6 — CANCELAR\n\nSe o usuário cancelar em qualquer etapa:\n\nPASSO A → Chame a tool Update Users com status = \"menu\".\nPASSO B → Envie: \"Tudo bem, cancelei por aqui. 👋\"\n\n⚠️ NUNCA encerre a conversa sem chamar Update Users.\n\n---\n\n# REGRAS GERAIS\n\n- Não pergunte dois campos ao mesmo tempo.\n- Não repita o checklist de progresso em cada mensagem. Só no resumo final.\n- Não invente dados. Se o usuário não informou, o valor é null.\n- Se o usuário mandar uma mensagem fora do contexto, redirecione gentilmente: \"Ainda estamos cadastrando seu alerta. 😊 [retome de onde parou]\"\n- Nunca use ** ou ## nas mensagens. WhatsApp usa *negrito* com asterisco simples se necessário.\n- Valores monetários: sempre mostrar como \"R$ 2.800\" para o usuário, mas salvar como número decimal (2800.00) na tool."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        17040,
+        7952
+      ],
+      "id": "8ed69cdb-b512-4fd7-95aa-4c44e3c1e3eb",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "avisa_alerts",
+          "mode": "list",
+          "cachedResultName": "avisa_alerts"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "user_id": "={{ $('User').item.json.id }}",
+            "max_price": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('max_price', ``, 'number') }}",
+            "product_name": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('product_name', ``, 'string') }}",
+            "features": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('features', ``, 'json') }}",
+            "color": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('color', ``, 'string') }}",
+            "model": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('model', ``, 'string') }}",
+            "created_at": "={{ $now }}",
+            "brand": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('brand', ``, 'string') }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "user_id",
+              "displayName": "user_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "product_name",
+              "displayName": "product_name",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "brand",
+              "displayName": "brand",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "model",
+              "displayName": "model",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "color",
+              "displayName": "color",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "max_price",
+              "displayName": "max_price",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "features",
+              "displayName": "features",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "array",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgresTool",
+      "typeVersion": 2.6,
+      "position": [
+        17184,
+        8176
+      ],
+      "id": "86ac88e1-eef6-45da-a07c-7c874826fa5f",
+      "name": "Insert Alerts",
+      "credentials": {
+        "postgres": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "avisa_users",
+          "mode": "list",
+          "cachedResultName": "avisa_users"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('User').item.json.id }}",
+            "status": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('status', ``, 'string') }}",
+            "updated_at": "={{ $now }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "whatsapp_id",
+              "displayName": "whatsapp_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "is_active",
+              "displayName": "is_active",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "updated_at",
+              "displayName": "updated_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgresTool",
+      "typeVersion": 2.6,
+      "position": [
+        17312,
+        8176
+      ],
+      "id": "0c2c1524-6e67-4596-a50a-b4f1138ae4a3",
+      "name": "Update Users",
+      "credentials": {
+        "postgres": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.whatsapp_id }}",
+        "contextWindowLength": 15
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        17056,
+        8176
+      ],
+      "id": "be2b288e-85a0-49c1-92c5-3bf199581040",
+      "name": "Postgres Chat Memory",
+      "credentials": {
+        "postgres": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "avisa_users",
+          "mode": "list",
+          "cachedResultName": "avisa_users"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Get_User').item.json.id }}",
+            "status": "cadastro_ia",
+            "updated_at": "={{ $now }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "whatsapp_id",
+              "displayName": "whatsapp_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "is_active",
+              "displayName": "is_active",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "updated_at",
+              "displayName": "updated_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        15872,
+        7664
+      ],
+      "id": "e26fc843-596c-40a0-8f89-bead7a5e2d7c",
+      "name": "UpdateStatus_CadastrandoIA",
+      "credentials": {
+        "postgres": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{$('Get_User').first().json.isEmpty()}}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "true",
+                      "singleValue": true
+                    },
+                    "id": "39f81142-e676-4620-9bd6-10afcf6744b3"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Novo Usuário"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "e7d7606e-d7dd-4559-b275-b3b8065d3c6c",
+                    "leftValue": "={{ $('Get_User').item.json.status }}",
+                    "rightValue": "cadastro_ia",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "cadastro_ia"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "2f4cc44c-aa62-43c1-aac0-b2d089ecc9f9",
+                    "leftValue": "={{ $('Get_User').item.json.status }}",
+                    "rightValue": "menu",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "menu"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "337372e1-fec4-451c-9e6f-5ec5d6c27e98",
+                    "leftValue": "={{ $('Get_User').item.json.status }}",
+                    "rightValue": "resposta_menu",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "resposta_menu"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "3562fcd6-dae1-4a81-a7d7-d155077d4795",
+                    "leftValue": "={{ $('Get_User').item.json.status }}",
+                    "rightValue": "resposta_exclusao",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "resposta_exclusao"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "conf-excl-br",
+                    "leftValue": "={{ $('Get_User').item.json.status }}",
+                    "rightValue": "confirmacao_exclusao",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "confirmacao_exclusao"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "fallback-cond",
+                    "leftValue": "={{ $('Get_User').item.json.status }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "isEmpty",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "fallback"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        15248,
+        7936
+      ],
+      "id": "b7eb07ef-d8d6-4e87-8bac-0ee9c3169391",
+      "name": "Switch_Status"
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "avisa_users",
+          "mode": "list",
+          "cachedResultName": "avisa_users"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "is_active": true,
+            "whatsapp_id": "={{ $('DataUser').item.json.whatsapp_id }}",
+            "name": "={{ $('DataUser').item.json.nome }}",
+            "status": "menu",
+            "updated_at": "={{ $now }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "whatsapp_id",
+              "displayName": "whatsapp_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "is_active",
+              "displayName": "is_active",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "updated_at",
+              "displayName": "updated_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        15872,
+        7520
+      ],
+      "id": "068503f6-0347-444a-8165-d75e04dfea26",
+      "name": "Insert_cadastro_ia",
+      "credentials": {
+        "postgres": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ea588dd9-5aa6-456e-8c66-7ffe71bf01d7",
+              "name": "whatsapp_id",
+              "value": "={{\n$if(\n$('Get_User').first().json.keys().length == 0,\n$('Insert_cadastro_ia').item.json.whatsapp_id,\n$('Get_User').item.json.whatsapp_id\n)}}",
+              "type": "string"
+            },
+            {
+              "id": "15224e02-a1f1-44e3-aeb2-e846ff6252d6",
+              "name": "id",
+              "value": "={{\n$if(\n$('Get_User').first().json.keys().length == 0,\n$('Insert_cadastro_ia').item.json.id,\n$('Get_User').item.json.id\n)\n }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        16832,
+        7952
+      ],
+      "id": "d34a332e-e162-4d4c-b23c-c2330bdf3a18",
+      "name": "User"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "avisa_users",
+          "mode": "list",
+          "cachedResultName": "avisa_users"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "status": "resposta_menu",
+            "id": "={{ $('Get_User').item.json.id }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "whatsapp_id",
+              "displayName": "whatsapp_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "is_active",
+              "displayName": "is_active",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "updated_at",
+              "displayName": "updated_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        15872,
+        7344
+      ],
+      "id": "d16cd338-1ce2-4b98-9e01-8c09e8367c10",
+      "name": "Insert_RespostaMenu",
+      "credentials": {
+        "postgres": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "deleteTable",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "n8n_chat_histories",
+          "mode": "list",
+          "cachedResultName": "n8n_chat_histories"
+        },
+        "deleteCommand": "delete",
+        "where": {
+          "values": [
+            {
+              "column": "session_id",
+              "value": "={{ $('Get_User').item.json.whatsapp_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        16080,
+        7664
+      ],
+      "id": "e06971b5-c19b-46d3-8a94-a0e3298d97d7",
+      "name": "Delete_LimparConversas",
+      "credentials": {
+        "postgres": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "avisa_alerts",
+          "mode": "list",
+          "cachedResultName": "avisa_alerts"
+        },
+        "limit": 8,
+        "where": {
+          "values": [
+            {
+              "column": "user_id",
+              "value": "={{ $('Get_User').item.json.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        15872,
+        7856
+      ],
+      "id": "b33b4421-619b-4d9e-a4dc-90211f05c1a1",
+      "name": "SelectAlertas",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $('SelectAlertas').all();\nconst validItems = items.filter(i => i?.json && Object.keys(i.json).length > 0);\n\nif (validItems.length === 0) {\n  return { lista_formatada: \"Você não possui alertas cadastrados no momento.\" };\n}\n\n// Retorna o valor ou um fallback se for null, \"null\", undefined ou vazio\nconst val = (v, fallback = null) =>\n  (v === null || v === undefined || v === 'null' || v === '') ? fallback : v;\n\nconst lista = validItems.map((item, idx) => {\n  const p = item.json;\n  let l = `${idx + 1}. *${p.product_name}*`;\n\n  const brand    = val(p.brand,     'Qualquer marca');\n  const model    = val(p.model,     'Qualquer modelo');\n  const color    = val(p.color,     'Qualquer cor');\n  const price    = val(p.max_price, null);\n  const features = Array.isArray(p.features) && p.features.length > 0 ? p.features : null;\n\n  l += `\\n   🏷️ Marca: ${brand}`;\n  l += `\\n   📱 Modelo: ${model}`;\n  if (price) {\n    const fmt = Number(price).toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});\n    l += `\\n   💰 Preço máx: R$ ${fmt}`;\n  }\n  l += `\\n   🎨 Cor: ${color}`;\n  if (features) l += `\\n   ✨ Extras: ${features.join(', ')}`;\n  l += `\\n   🟢 Ativo`;\n\n  return l;\n});\n\nreturn { lista_formatada: lista.join('\\n\\n') };"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        16288,
+        7856
+      ],
+      "id": "9aeeb17e-41a4-45f3-ac17-e97c83cc0ee8",
+      "name": "EnumerarAlertas"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "avisa_users",
+          "mode": "list",
+          "cachedResultName": "avisa_users"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "status": "resposta_menu",
+            "id": "={{ $('Get_User').item.json.id }}",
+            "updated_at": "={{ $now }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "whatsapp_id",
+              "displayName": "whatsapp_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "is_active",
+              "displayName": "is_active",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "updated_at",
+              "displayName": "updated_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        16080,
+        7856
+      ],
+      "id": "ca0885bf-55db-4b6c-866b-49b73b8a695d",
+      "name": "Insert_RespostaMenu1",
+      "credentials": {
+        "postgres": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "avisa_users",
+          "mode": "list",
+          "cachedResultName": "avisa_users"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Get_User').item.json.id }}",
+            "status": "resposta_menu",
+            "updated_at": "={{ $now }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "whatsapp_id",
+              "displayName": "whatsapp_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "is_active",
+              "displayName": "is_active",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "updated_at",
+              "displayName": "updated_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        15872,
+        8176
+      ],
+      "id": "9d370be6-1b4e-44e0-bcb8-4e3365aa64d6",
+      "name": "Insert_RespostaMenu2",
+      "credentials": {
+        "postgres": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "avisa_users",
+          "mode": "list",
+          "cachedResultName": "avisa_users"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Get_User').item.json.id }}",
+            "status": "={{\n$if(\n $('SelectAlertas_Excluir').first().json.keys().length == 0,\n\"menu\",\n\"resposta_exclusao\"\n)\n}}",
+            "updated_at": "={{ $now }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "whatsapp_id",
+              "displayName": "whatsapp_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "is_active",
+              "displayName": "is_active",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "updated_at",
+              "displayName": "updated_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        16080,
+        8016
+      ],
+      "id": "7df94260-e0b5-4254-8880-906ddf71af23",
+      "name": "Insert_RespostaMenu3",
+      "credentials": {
+        "postgres": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "avisa_alerts",
+          "mode": "list",
+          "cachedResultName": "avisa_alerts"
+        },
+        "limit": 8,
+        "where": {
+          "values": [
+            {
+              "column": "user_id",
+              "value": "={{ $('Get_User').item.json.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        15872,
+        8512
+      ],
+      "id": "1a9c5530-9355-4ee8-9c7f-c819aed43326",
+      "name": "SelectAlertas2",
+      "credentials": {
+        "postgres": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $('SelectAlertas2').all();\nconst validItems = items.filter(i => i?.json && Object.keys(i.json).length > 0);\n\nreturn {\n  json: {\n    lista:   validItems.map(i => i.json.id),\n    alertas: validItems.map(i => ({\n      id:           i.json.id,\n      product_name: i.json.product_name,\n      brand:        i.json.brand  || null,\n      model:        i.json.model  || null,\n      max_price:    i.json.max_price || null,\n      color:        i.json.color  || null\n    }))\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        16272,
+        8512
+      ],
+      "id": "01419798-6fb3-4c3d-8c0d-77cd440d6063",
+      "name": "EnumerarAlertas2"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "cancel-zero",
+              "leftValue": "={{ $('DataUser').item.json.mensagem_user }}",
+              "rightValue": "0",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        15584,
+        8768
+      ],
+      "id": "2a7cadf1-6835-4a9e-8889-13671e2124ce",
+      "name": "If_Cancel"
+    },
+    {
+      "parameters": {
+        "operation": "deleteTable",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "avisa_alerts",
+          "mode": "list",
+          "cachedResultName": "avisa_alerts"
+        },
+        "deleteCommand": "delete",
+        "where": {
+          "values": [
+            {
+              "column": "id",
+              "value": "={{ $('Code_ParseConfirmacao').item.json.alert_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        15872,
+        8688
+      ],
+      "id": "ecbc2822-075c-455b-9c25-16e73eb86859",
+      "name": "Delete table or rows",
+      "credentials": {
+        "postgres": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "avisa_users",
+          "mode": "list",
+          "cachedResultName": "avisa_users"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Get_User').item.json.id }}",
+            "status": "resposta_menu",
+            "updated_at": "={{ $now }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "whatsapp_id",
+              "displayName": "whatsapp_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "is_active",
+              "displayName": "is_active",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "updated_at",
+              "displayName": "updated_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        16080,
+        8688
+      ],
+      "id": "fbc8ee7f-1593-41af-869f-7c1ab28105b8",
+      "name": "Insert_RespostaMenu4",
+      "credentials": {
+        "postgres": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Banco de dados",
+        "height": 2032,
+        "width": 480,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        15744,
+        7232
+      ],
+      "typeVersion": 1,
+      "id": "3dbef78f-0d99-4ab7-8d2b-ab6913bcd59a",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Lógica de fluxo",
+        "height": 1856,
+        "width": 932,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        15200,
+        7408
+      ],
+      "typeVersion": 1,
+      "id": "a68030d7-3d19-4cc1-bce6-f580a1091710",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Códigos",
+        "height": 2032,
+        "width": 208
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        16224,
+        7232
+      ],
+      "typeVersion": 1,
+      "id": "cf1e8176-7420-4a6f-8566-7721543e125c",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "## Envio de mensagens ao usuários",
+        "height": 2032,
+        "width": 304,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        16432,
+        7232
+      ],
+      "typeVersion": 1,
+      "id": "ee0efd92-bbbd-4b83-9e0c-7baabb19d1a5",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "## Agente de I.A",
+        "height": 480,
+        "width": 1504,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        16736,
+        7872
+      ],
+      "typeVersion": 1,
+      "id": "3a8f7e07-79ad-4b93-99f8-d6b4320343cf",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $('SelectAlertas_Excluir').all();\nconst validItems = items.filter(i => i?.json && Object.keys(i.json).length > 0);\n\nif (validItems.length === 0) {\n  return { lista_formatada: \"Você não possui alertas cadastrados.\\n\\nSempre que precisar, é só mandar um 'Oi'! 👋\" };\n}\n\nconst lista = validItems.map((item, idx) => {\n  const p = item.json;\n  let l = `${idx + 1}. *${p.product_name}*`;\n  if (p.brand || p.model)\n    l += ` — ${[p.brand, p.model].filter(Boolean).join(' ')}`;\n  if (p.max_price) {\n    const fmt = Number(p.max_price).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});\n    l += `\\n   💰 Até R$ ${fmt}`;\n  }\n  if (p.color) l += `\\n   🎨 ${p.color}`;\n  return l;\n});\n\nreturn { lista_formatada: lista.join('\\n\\n') };"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        16288,
+        8016
+      ],
+      "id": "f1d047a5-d189-4051-9a77-4c21a60028df",
+      "name": "EnumerarAlertas_Excluir"
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "avisa_alerts",
+          "mode": "list",
+          "cachedResultName": "avisa_alerts"
+        },
+        "limit": 8,
+        "where": {
+          "values": [
+            {
+              "column": "user_id",
+              "value": "={{ $('Get_User').item.json.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        15872,
+        8016
+      ],
+      "id": "07bfaac8-ed43-469c-a4e5-501c7b1de58b",
+      "name": "SelectAlertas_Excluir",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "for (const item of $input.all()) {\n  const chat = item.json.body.data.Info.Sender || \"\";\n  item.json.body.data.Info.Sender = chat.replace('@s.whatsapp.net', '');\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        14016,
+        8048
+      ],
+      "id": "a138e658-2598-416b-afbe-592e3348e661",
+      "name": "Code_Formatar_numero"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://YOUR_EVOLUTION_API_URL/send/text",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "delay",
+              "value": "={{ 1000 }}"
+            },
+            {
+              "name": "number",
+              "value": "={{ $('DataUser').item.json.whatsapp_id }}"
+            },
+            {
+              "name": "text",
+              "value": "={{ $json.menu_text }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a82dc86f-1afa-4a1b-a879-c841e8258698",
+      "name": "ChatMenuPrincipal",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        16496,
+        7344
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "apikey_evolution"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://YOUR_EVOLUTION_API_URL/send/text",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "delay",
+              "value": "={{ 1000 }}"
+            },
+            {
+              "name": "number",
+              "value": "={{ $('DataUser').item.json.whatsapp_id }}"
+            },
+            {
+              "name": "text",
+              "value": "=📋 *Seus alertas ativos:*\n\n{{ $('EnumerarAlertas').item.json.lista_formatada }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "bad04e3d-3194-4043-aeec-29de8c467d93",
+      "name": "ChatListarAlertas",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        16496,
+        7856
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "apikey_evolution"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://YOUR_EVOLUTION_API_URL/send/text",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "delay",
+              "value": "={{ 1000 }}"
+            },
+            {
+              "name": "number",
+              "value": "={{ $('DataUser').item.json.whatsapp_id }}"
+            },
+            {
+              "name": "text",
+              "value": "=Aqui estão seus alertas ativos. Digite o *número* do alerta que deseja excluir:\n\n{{ $('EnumerarAlertas_Excluir').item.json.lista_formatada.replace('1. ', '1️⃣ ').replace('2. ', '2️⃣ ').replace('3. ', '3️⃣ ').replace('4. ', '4️⃣ ').replace('5. ', '5️⃣ ').replace('6. ', '6️⃣ ').replace('7. ', '7️⃣ ').replace('8. ', '8️⃣ ').replace('9. ', '9️⃣ ') }}\n\n_Digite *0* para cancelar e voltar ao menu._"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "06a4240f-cdff-4059-881b-93d949cd3b24",
+      "name": "ChatListarAlertasExcluir",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        16496,
+        8016
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "apikey_evolution"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://YOUR_EVOLUTION_API_URL/send/text",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "delay",
+              "value": "={{ 1000 }}"
+            },
+            {
+              "name": "number",
+              "value": "={{ $('DataUser').item.json.whatsapp_id }}"
+            },
+            {
+              "name": "text",
+              "value": "=Tudo bem, operação cancelada! 🙅\n\nO que mais deseja fazer?\n\n1️⃣ Cadastrar novo alerta\n2️⃣ Listar seus alertas\n3️⃣ Excluir um alerta\n4️⃣ Cancelar"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "2e67ae9c-22e9-41d4-9ad5-40aa037d8c99",
+      "name": "ChatCancelar",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        16496,
+        8176
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "apikey_evolution"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://YOUR_EVOLUTION_API_URL/send/text",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "delay",
+              "value": "={{ 1000 }}"
+            },
+            {
+              "name": "number",
+              "value": "={{ $('DataUser').item.json.whatsapp_id }}"
+            },
+            {
+              "name": "text",
+              "value": "=Ops! Não entendi essa opção. 🧐\n\nPor favor, escolha uma das opções:\n\n1️⃣ Cadastrar novo alerta\n2️⃣ Listar seus alertas\n3️⃣ Excluir um alerta\n4️⃣ Cancelar"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a1e99335-5da0-4e48-8140-888afdecf091",
+      "name": "ChatComandoErrado",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        16496,
+        8352
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "apikey_evolution"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://YOUR_EVOLUTION_API_URL/send/text",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "delay",
+              "value": "={{ 1000 }}"
+            },
+            {
+              "name": "number",
+              "value": "={{ $('DataUser').item.json.whatsapp_id }}"
+            },
+            {
+              "name": "text",
+              "value": "=✅ Alerta excluído com sucesso! 🗑️\n\nO que mais deseja fazer?\n\n1️⃣ Cadastrar novo alerta\n2️⃣ Listar seus alertas\n3️⃣ Excluir um alerta\n4️⃣ Cancelar"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "2ce657d8-35c1-42b1-875c-511851678d37",
+      "name": "ChatAlertaExcluido",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        16496,
+        8688
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "apikey_evolution"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://YOUR_EVOLUTION_API_URL/send/text",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "delay",
+              "value": "={{ 1000 }}"
+            },
+            {
+              "name": "number",
+              "value": "={{ $('DataUser').item.json.whatsapp_id }}"
+            },
+            {
+              "name": "text",
+              "value": "={{ $json.output }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "f6ca3552-aa24-44b4-a840-36c7f9ac0144",
+      "name": "Chat_AgenteIA",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        17392,
+        7952
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "apikey_evolution"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "152fe62c-c56c-4cc8-8063-15555d1863f8",
+              "leftValue": "={{ $json.contains_thanks }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        15040,
+        8032
+      ],
+      "id": "3a610020-e229-4238-b62f-5669e3cf2d2b",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://YOUR_EVOLUTION_API_URL/send/text",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "delay",
+              "value": "={{ 1000 }}"
+            },
+            {
+              "name": "number",
+              "value": "={{ $('DataUser').item.json.whatsapp_id }}"
+            },
+            {
+              "name": "text",
+              "value": "=Disponha! 👋 Precisando de mais alguma promoção, estou por aqui monitorando tudo em tempo real. 🛍️"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "cc8db154-8ee3-4dbe-b150-50e63ba3f54e",
+      "name": "ChatAgradescimento",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        16496,
+        8528
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "apikey_evolution"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "avisa_users",
+          "mode": "list",
+          "cachedResultName": "avisa_users"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Get_User').item.json.id }}",
+            "status": "menu",
+            "updated_at": "={{ $now }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "whatsapp_id",
+              "displayName": "whatsapp_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "is_active",
+              "displayName": "is_active",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "updated_at",
+              "displayName": "updated_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        15872,
+        8352
+      ],
+      "id": "052d424c-7429-4572-a75b-ef57943f8793",
+      "name": "Update_menu",
+      "credentials": {
+        "postgres": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const rawText = $('DataUser').first().json.mensagem_user || \"\";\n\nconst thankYouWords = [\"obrigado\", \"obg\", \"obrigada\", \"valeu\", \"vlw\", \"agradecido\", \"agradecida\"];\nconst cleanText = rawText.toLowerCase().trim();\nconst hasThanks = thankYouWords.some(word => cleanText.includes(word));\n\nconst status = $input.first().json.status;\n\nlet status_final = false;\nif ([\"resposta_menu\", \"menu\"].includes(status) && hasThanks) {\n    status_final = true;\n}\n\nreturn {\n    json: {\n        contains_thanks: status_final\n    }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        14848,
+        8032
+      ],
+      "id": "c31b35fc-cf39-400e-9575-db04d1641029",
+      "name": "CodeIfAgradecimento"
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-4o-mini",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        16912,
+        8176
+      ],
+      "id": "3cf02da0-bc87-4670-84d7-c6a96707d4b0",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://YOUR_EVOLUTION_API_URL/send/text",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "delay",
+              "value": "={{ 1000 }}"
+            },
+            {
+              "name": "number",
+              "value": "YOUR_PHONE@s.whatsapp.net"
+            },
+            {
+              "name": "text",
+              "value": "=Olá, {{ $json.name }}! 👋 Bem-vindo ao *AvisaZap*!\n\nSou seu assistente pessoal de promoções. Me diga o que quer comprar e eu aviso quando o preço cair! 🛍️"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "046428f3-fea7-4727-bef0-f113b0205b1b",
+      "name": "ExemploEnvio1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        16496,
+        7520
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "apikey_evolution"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "filtro-isfromme",
+              "leftValue": "={{ $json.body.data.Info.IsFromMe }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "notEquals"
+              }
+            },
+            {
+              "id": "filtro-isgroup",
+              "leftValue": "={{ $json.body.data.Info.IsGroup }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "notEquals"
+              }
+            },
+            {
+              "id": "filtro-type",
+              "leftValue": "={{ $json.body.data.Info.Type }}",
+              "rightValue": "text",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "filtro-conversation",
+              "leftValue": "={{ $json.body.data.Message.conversation }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        14208,
+        8048
+      ],
+      "id": "6161e03b-6722-4223-b232-07de622f25bc",
+      "name": "If_FiltroWebhook"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "avisa_users",
+          "mode": "list",
+          "cachedResultName": "avisa_users"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Get_User').item.json.id }}",
+            "status": "menu",
+            "updated_at": "={{ $now }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "whatsapp_id",
+              "displayName": "whatsapp_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "is_active",
+              "displayName": "is_active",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "updated_at",
+              "displayName": "updated_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        15872,
+        9088
+      ],
+      "id": "04b38fee-5a88-47e9-a9bc-b01cf3570e40",
+      "name": "Update_menu_Fallback",
+      "credentials": {
+        "postgres": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://YOUR_EVOLUTION_API_URL/send/text",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "delay",
+              "value": "={{ 1000 }}"
+            },
+            {
+              "name": "number",
+              "value": "={{ $('DataUser').item.json.whatsapp_id }}"
+            },
+            {
+              "name": "text",
+              "value": "=Oi, {{ $('Get_User').item.json.name }}! 👋 Parece que algo deu errado por aqui. Vamos recomeçar?\n\nEscolha uma opção:\n\n1️⃣ Cadastrar um alerta de oferta\n2️⃣ Listar seus alertas\n3️⃣ Excluir um alerta\n4️⃣ Cancelar"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "2a4159fb-9b23-4c31-9c97-91683414ad0a",
+      "name": "ChatFallback",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        16496,
+        9088
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "apikey_evolution"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "avisa_alerts",
+          "mode": "list",
+          "cachedResultName": "avisa_alerts"
+        },
+        "limit": 8,
+        "where": {
+          "values": [
+            {
+              "column": "user_id",
+              "value": "={{ $('Get_User').first().json.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        16080,
+        7344
+      ],
+      "id": "2ffae7e5-c045-4f9c-bbda-469fc68f95b1",
+      "name": "SelectAlertas_MenuCount",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst validItems = items.filter(i => i.json && Object.keys(i.json).length > 0);\nconst count = validItems.length;\nconst MAX_ALERTS = 8;\n\nconst userName = $('Get_User').first().json.name || 'você';\n\nlet menu = `Olá, ${userName}! 😊 O que deseja fazer?\\n\\n`;\nmenu += `1️⃣ Cadastrar novo alerta`;\n\nif (count > 0) {\n  menu += `\\n2️⃣ Listar seus alertas (${count} ativo${count !== 1 ? 's' : ''})`;\n  menu += `\\n3️⃣ Excluir um alerta`;\n} else {\n  menu += `\\n\\n_Você ainda não tem alertas cadastrados._`;\n}\nmenu += `\\n4️⃣ Cancelar`;\n\nif (count >= MAX_ALERTS) {\n  menu += `\\n\\n⚠️ Limite de ${MAX_ALERTS} alertas atingido. Exclua um para cadastrar novo.`;\n}\n\nreturn { json: { menu_text: menu } };"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        16288,
+        7344
+      ],
+      "id": "07b405a8-d1cd-4474-be8f-7b0b5105810e",
+      "name": "Code_MenuDinamico"
+    },
+    {
+      "parameters": {
+        "jsCode": "return {\n  json: {\n    menu_text:\n      `O que deseja fazer?\\n\\n` +\n      `1️⃣ Cadastrar novo alerta\\n\\n` +\n      `_Você ainda não tem alertas cadastrados._\\n` +\n      `4️⃣ Cancelar`\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        16288,
+        7584
+      ],
+      "id": "0adb13f6-9b32-4b09-8fb1-650016c6f794",
+      "name": "Code_MenuNovo"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "avisa_users",
+          "mode": "list",
+          "cachedResultName": "avisa_users"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Get_User').item.json.id }}",
+            "status": "={{ 'confirmacao_exclusao:' + \n$json.lista[\n$('DataUser').item.json.mensagem_user - 1\n] \n}}",
+            "updated_at": "={{ $now }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "whatsapp_id",
+              "displayName": "whatsapp_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "is_active",
+              "displayName": "is_active",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "updated_at",
+              "displayName": "updated_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        15856,
+        8896
+      ],
+      "id": "7819c67d-cbc0-4b3f-8658-de26e5adc286",
+      "name": "Insert_ConfirmacaoExclusao",
+      "credentials": {
+        "postgres": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://YOUR_EVOLUTION_API_URL/send/text",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "delay",
+              "value": "={{ 1000 }}"
+            },
+            {
+              "name": "number",
+              "value": "={{ $('DataUser').item.json.whatsapp_id }}"
+            },
+            {
+              "name": "text",
+              "value": "={{ \n'⚠️ Tem certeza que deseja excluir o alerta de *' + \n$('If_Cancel').item.json.alertas[\n$('DataUser').item.json.mensagem_user - 1].product_name +\n'*?\\n\\n1️⃣ Sim, excluir\\n2️⃣ Não, cancelar'\n}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "55a6502b-d541-4374-9b33-47862f38777c",
+      "name": "ChatConfirmarExclusao",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        16496,
+        8896
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "apikey_evolution"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const status = $('Get_User').first().json.status  || '';\nconst parts  = status.split(':');\nconst alertId = parts.length > 1 ? parseInt(parts[1]) : null;\nreturn { json: { alert_id: alertId } };"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        15408,
+        8416
+      ],
+      "id": "80fade72-2281-478c-961f-4b6098948b5a",
+      "name": "Code_ParseConfirmacao"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "if-conf-del",
+              "leftValue": "={{ $('DataUser').item.json.mensagem_user }}",
+              "rightValue": "1",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        15584,
+        8416
+      ],
+      "id": "b6f2d141-ca68-48f9-80eb-ee7f4d1e2303",
+      "name": "If_ConfirmDelete"
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "avisa_users",
+          "mode": "list",
+          "cachedResultName": "avisa_users"
+        },
+        "where": {
+          "values": [
+            {
+              "column": "id",
+              "value": "={{ $('User').item.json.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        17616,
+        7952
+      ],
+      "id": "b921564c-98bb-4482-8e76-2ea8584145e3",
+      "name": "Check_AgentStatus",
+      "credentials": {
+        "postgres": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "agent-done-c",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "menu",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        17824,
+        7952
+      ],
+      "id": "88a35940-5c8b-4d4d-adf4-8a8a45ee1a2f",
+      "name": "If_AgentDone"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "avisa_users",
+          "mode": "list",
+          "cachedResultName": "avisa_users"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('User').item.json.id }}",
+            "status": "resposta_menu",
+            "updated_at": "={{ $now }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "whatsapp_id",
+              "displayName": "whatsapp_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "is_active",
+              "displayName": "is_active",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "updated_at",
+              "displayName": "updated_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        18064,
+        7936
+      ],
+      "id": "2e928d2e-cb64-4ed5-b53a-1ea45e379472",
+      "name": "Update_AgentDone",
+      "credentials": {
+        "postgres": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "Postgres account"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "YOUR_N8N_URL",
+            "user-agent": "Go-http-client/2.0",
+            "content-length": "1472",
+            "accept-encoding": "gzip",
+            "content-type": "application/json",
+            "x-forwarded-for": "YOUR_IP",
+            "x-forwarded-host": "YOUR_N8N_URL",
+            "x-forwarded-proto": "https",
+            "x-railway-edge": "railway/us-west2",
+            "x-railway-request-id": "YOUR_REQUEST_ID",
+            "x-real-ip": "YOUR_IP",
+            "x-request-start": "1780452596975"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "data": {
+              "Info": {
+                "AddressingMode": "",
+                "BroadcastListOwner": "",
+                "BroadcastRecipients": null,
+                "Category": "",
+                "Chat": "YOUR_PHONE@s.whatsapp.net",
+                "DeviceSentMeta": null,
+                "Edit": "",
+                "ID": "3EB0FB1D86658A2E051D9C",
+                "IsFromMe": false,
+                "IsGroup": false,
+                "MediaType": "",
+                "MsgBotInfo": {
+                  "EditSenderTimestampMS": "0001-01-01T00:00:00Z",
+                  "EditTargetID": "",
+                  "EditType": ""
+                },
+                "MsgMetaInfo": {
+                  "DeprecatedLIDSession": null,
+                  "TargetChat": "",
+                  "TargetID": "",
+                  "TargetSender": "",
+                  "ThreadMessageID": "",
+                  "ThreadMessageSenderJID": ""
+                },
+                "Multicast": false,
+                "PushName": "Bruno Machado",
+                "RecipientAlt": "",
+                "Sender": "YOUR_PHONE@s.whatsapp.net",
+                "SenderAlt": "279546569994342@lid",
+                "ServerID": 0,
+                "Timestamp": "2026-06-02T23:09:56-03:00",
+                "Type": "text",
+                "VerifiedName": null
+              },
+              "IsBotInvoke": false,
+              "IsDocumentWithCaption": false,
+              "IsEdit": false,
+              "IsEphemeral": false,
+              "IsLottieSticker": false,
+              "IsViewOnce": false,
+              "IsViewOnceV2": false,
+              "IsViewOnceV2Extension": false,
+              "Message": {
+                "conversation": "2",
+                "messageContextInfo": {
+                  "deviceListMetadata": {
+                    "receiverAccountType": 0,
+                    "recipientKeyHash": "LtVRL2Mq8uUI+g==",
+                    "recipientTimestamp": 1778804220,
+                    "senderAccountType": 0,
+                    "senderKeyHash": "OmHCLjMtym8lDA==",
+                    "senderTimestamp": 1780406451
+                  },
+                  "deviceListMetadataVersion": 2,
+                  "messageSecret": "YOUR_MESSAGE_SECRET"
+                }
+              },
+              "NewsletterMeta": null,
+              "RetryCount": 0,
+              "SourceWebMsg": null,
+              "UnavailableRequestID": ""
+            },
+            "event": "Message",
+            "instanceId": "YOUR_EVOLUTION_INSTANCE_ID",
+            "instanceName": "AvizaZap",
+            "instanceToken": "YOUR_EVOLUTION_API_KEY"
+          },
+          "webhookUrl": "https://YOUR_N8N_URL/webhook/YOUR_WEBHOOK_PATH",
+          "executionMode": "production"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Code_Formatar_numero",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get_User": {
+      "main": [
+        [
+          {
+            "node": "CodeIfAgradecimento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DataUser": {
+      "main": [
+        [
+          {
+            "node": "Get_User",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch_resposta": {
+      "main": [
+        [
+          {
+            "node": "UpdateStatus_CadastrandoIA",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "SelectAlertas",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "SelectAlertas_Excluir",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Update_menu",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "ChatComandoErrado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Chat_AgenteIA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert Alerts": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Users": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "UpdateStatus_CadastrandoIA": {
+      "main": [
+        [
+          {
+            "node": "Delete_LimparConversas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch_Status": {
+      "main": [
+        [
+          {
+            "node": "Insert_cadastro_ia",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "User",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Insert_RespostaMenu",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Switch_resposta",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "SelectAlertas2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Code_ParseConfirmacao",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Update_menu_Fallback",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert_cadastro_ia": {
+      "main": [
+        [
+          {
+            "node": "ExemploEnvio1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "User": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert_RespostaMenu": {
+      "main": [
+        [
+          {
+            "node": "SelectAlertas_MenuCount",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete_LimparConversas": {
+      "main": [
+        [
+          {
+            "node": "User",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SelectAlertas": {
+      "main": [
+        [
+          {
+            "node": "Insert_RespostaMenu1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "EnumerarAlertas": {
+      "main": [
+        [
+          {
+            "node": "ChatListarAlertas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert_RespostaMenu1": {
+      "main": [
+        [
+          {
+            "node": "EnumerarAlertas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert_RespostaMenu2": {
+      "main": [
+        [
+          {
+            "node": "ChatCancelar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert_RespostaMenu3": {
+      "main": [
+        [
+          {
+            "node": "EnumerarAlertas_Excluir",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SelectAlertas2": {
+      "main": [
+        [
+          {
+            "node": "EnumerarAlertas2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "EnumerarAlertas2": {
+      "main": [
+        [
+          {
+            "node": "If_Cancel",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If_Cancel": {
+      "main": [
+        [
+          {
+            "node": "Insert_RespostaMenu2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Insert_ConfirmacaoExclusao",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete table or rows": {
+      "main": [
+        [
+          {
+            "node": "Insert_RespostaMenu4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert_RespostaMenu4": {
+      "main": [
+        [
+          {
+            "node": "ChatAlertaExcluido",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "EnumerarAlertas_Excluir": {
+      "main": [
+        [
+          {
+            "node": "ChatListarAlertasExcluir",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SelectAlertas_Excluir": {
+      "main": [
+        [
+          {
+            "node": "Insert_RespostaMenu3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code_Formatar_numero": {
+      "main": [
+        [
+          {
+            "node": "If_FiltroWebhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Switch_Status",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Update_menu",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update_menu": {
+      "main": [
+        [
+          {
+            "node": "ChatAgradescimento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CodeIfAgradecimento": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ExemploEnvio1": {
+      "main": [
+        [
+          {
+            "node": "Code_MenuNovo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If_FiltroWebhook": {
+      "main": [
+        [
+          {
+            "node": "DataUser",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update_menu_Fallback": {
+      "main": [
+        [
+          {
+            "node": "ChatFallback",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SelectAlertas_MenuCount": {
+      "main": [
+        [
+          {
+            "node": "Code_MenuDinamico",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code_MenuDinamico": {
+      "main": [
+        [
+          {
+            "node": "ChatMenuPrincipal",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code_MenuNovo": {
+      "main": [
+        [
+          {
+            "node": "ChatMenuPrincipal",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ChatListarAlertas": {
+      "main": [
+        [
+          {
+            "node": "SelectAlertas_MenuCount",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert_ConfirmacaoExclusao": {
+      "main": [
+        [
+          {
+            "node": "ChatConfirmarExclusao",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code_ParseConfirmacao": {
+      "main": [
+        [
+          {
+            "node": "If_ConfirmDelete",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If_ConfirmDelete": {
+      "main": [
+        [
+          {
+            "node": "Delete table or rows",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Insert_RespostaMenu2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chat_AgenteIA": {
+      "main": [
+        [
+          {
+            "node": "Check_AgentStatus",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check_AgentStatus": {
+      "main": [
+        [
+          {
+            "node": "If_AgentDone",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If_AgentDone": {
+      "main": [
+        [
+          {
+            "node": "Update_AgentDone",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update_AgentDone": {
+      "main": [
+        [
+          {
+            "node": "SelectAlertas_MenuCount",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "YOUR_VERSION_ID",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "YOUR_N8N_INSTANCE_ID"
+  },
+  "id": "YOUR_WORKFLOW_ID",
+  "tags": []
+}
